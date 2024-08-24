@@ -2,7 +2,7 @@
 import readline from 'readline/promises';
 import { stdin as input, stdout as output } from 'process';
 
-export class Read {
+export class ReadLine {
   rl = readline.createInterface({
     input,
     output,
