@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
@@ -34,6 +35,8 @@ export class ItemService {
     try {
       const itemsArray = items.split(',');
       let elementList = [];
+      let totalAmount = 0;
+      let discountedAmount = 0;
       itemsArray.forEach((element) => {
         const item = element.trim();
         const itemDetails = price.find((x) => x.item.toLowerCase() === item.toLowerCase());
@@ -42,25 +45,25 @@ export class ItemService {
         }
         const discountData = discount.find((x) => x.itemId === itemDetails.id);
         if (elementList.length) {
-          // eslint-disable-next-line max-len
           const indexInElementList = elementList.findIndex((x) => x.Item.toLowerCase() === item.toLowerCase());
           if (indexInElementList > -1) {
-            // eslint-disable-next-line max-len
-            elementList = this.addIntoExistingElement(indexInElementList, elementList, itemDetails, discountData);
+            ({ elementList, totalAmount, discountedAmount } = this.addIntoExistingElement(indexInElementList, elementList, itemDetails, discountData, totalAmount, discountedAmount));
           } else {
-            elementList = this.addNewelement(elementList, itemDetails);
+            ({ elementList, totalAmount, discountedAmount } = this.addNewelement(elementList, itemDetails, totalAmount, discountedAmount));
           }
         } else {
-          elementList = this.addNewelement(elementList, itemDetails);
+          ({ elementList, totalAmount, discountedAmount } = this.addNewelement(elementList, itemDetails, totalAmount, discountedAmount));
         }
       });
-      return elementList;
+      totalAmount = totalAmount.toFixed(2);
+      discountedAmount = discountedAmount.toFixed(2);
+      return { elementList, totalAmount, discountedAmount };
     } catch (error) {
       throw new Error(error.message);
     }
   };
 
-  addNewelement = (elementList, itemDetails) => {
+  addNewelement = (elementList, itemDetails, totalAmount, discountedAmount) => {
     try {
       elementList.push({
         id: itemDetails.id,
@@ -69,32 +72,45 @@ export class ItemService {
         Price: itemDetails.price,
         discountPrice: itemDetails.price,
       });
-      return elementList;
+      totalAmount += itemDetails.price;
+      discountedAmount += itemDetails.price;
+      return { elementList, totalAmount, discountedAmount };
     } catch (error) {
       throw new Error(error.message);
     }
   };
 
-  addIntoExistingElement = (indexInElementList, elementList, itemDetails, discountData) => {
+  addIntoExistingElement = (indexInElementList, elementList, itemDetails, discountData, totalAmount, discountedAmount) => {
     try {
-      // eslint-disable-next-line max-len
-      // const indexInElementList = elementList.findIndex((x) => x.Item.toLowerCase() === item.toLowerCase());
-      // if (indexInElementList > -1) {
       elementList[indexInElementList].Quantity += 1;
       elementList[indexInElementList].Price += itemDetails.price;
       elementList[indexInElementList].discountPrice += itemDetails.price;
-      // eslint-disable-next-line max-len
+      totalAmount += itemDetails.price;
+      discountedAmount += itemDetails.price;
       if (discountData && isMultipleHelper(elementList[indexInElementList].Quantity, discountData.amount)) {
         if (elementList[indexInElementList].discountPrice) {
-          // elementList[indexInElementList].discountPrice += discountData.discountPrice;
-          // eslint-disable-next-line max-len
           elementList[indexInElementList].discountPrice = elementList[indexInElementList].discountPrice - (itemDetails.price * discountData.amount) + discountData.discountPrice;
+          discountedAmount = discountedAmount - (itemDetails.price * discountData.amount) + discountData.discountPrice;
         } else {
           elementList[indexInElementList].discountPrice = discountData.discountPrice;
+          discountedAmount += discountData.discountPrice;
         }
       }
       // }
-      return elementList;
+      return { elementList, totalAmount, discountedAmount };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
+  modifyData = async (listData) => {
+    try {
+      let response = 'Item             Quantity             Price \n ---------------------------------------------------\n';
+      listData.elementList.forEach((x) => {
+        response += `${x.Item}           ${x.Quantity}       ${x.discountPrice} \n`;
+      });
+      response += `Total price: $${listData.totalAmount} \nYou saved $${listData.totalAmount - listData.discountedAmount}`;
+      return response;
     } catch (error) {
       throw new Error(error.message);
     }
