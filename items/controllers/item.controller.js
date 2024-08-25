@@ -10,11 +10,11 @@ export class ItemController {
     try {
       const items = await this.itemsService.getInput();
       const areItemsValid = await this.itemsService.areItemsValid(items);
-      // const response = 'Invalid items entered';
-      // if (areItemsValid) {
-
-      // }
-      return items;
+      let response = 'Invalid items entered';
+      if (areItemsValid) {
+        response = await this.itemsService.getItemListing(items);
+      }
+      return response;
     } catch (error) {
       throw new Error(error.message);
     }
