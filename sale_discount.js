@@ -10,7 +10,7 @@ const main = async () => {
     const response = await itemController.checkPriceAndDiscount();
     console.log(response);
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
   }
 };
 

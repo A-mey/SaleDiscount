@@ -4,9 +4,6 @@ import { expect } from 'chai';
 import { describe, it } from 'node:test';
 import { ItemService } from '../items/services/item.service.js';
 
-// const { describe } = mocha.describe;
-// const { it } = mocha.it;
-
 describe('Services', async () => {
   it('should accept comma separated strings', async () => {
     const itemService = new ItemService();
