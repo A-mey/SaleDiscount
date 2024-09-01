@@ -6,23 +6,12 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable import/extensions */
-import { ReadLine } from '../utils/readLine.util.js';
 import regexHelper from '../helpers/regex.helper.js';
 import isMultipleHelper from '../helpers/isMultiple.helper.js';
 import price from '../data/price.js';
 import discount from '../data/discount.js';
 
 export class ItemService {
-  getInput = async () => {
-    try {
-      const readLine = new ReadLine();
-      const items = await readLine.askQuestion('Please enter all the items purchased separated by a comma ');
-      return items;
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  };
-
   areItemsValid = async (item) => {
     try {
       return regexHelper(item);
@@ -98,19 +87,6 @@ export class ItemService {
       }
       // }
       return { elementList, totalAmount, discountedAmount };
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  };
-
-  modifyData = async (listData) => {
-    try {
-      let response = 'Item             Quantity             Price \n ---------------------------------------------------\n';
-      listData.elementList.forEach((x) => {
-        response += `${x.Item}           ${x.Quantity}       ${x.discountPrice} \n`;
-      });
-      response += `Total price: $${listData.totalAmount} \nYou saved $${listData.totalAmount - listData.discountedAmount}`;
-      return response;
     } catch (error) {
       throw new Error(error.message);
     }
