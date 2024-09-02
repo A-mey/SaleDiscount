@@ -23,8 +23,8 @@ export class ItemController {
       if (!areItemsValid) {
         throw new Error('Invalid input');
       }
-      let listData = await this.billingService.getItemListing(itemList);
-      const totalPrice = await this.billingService.getTotalPrice(listData);
+      let listData = await this.billingService.getPricingListing(itemList);
+      const totalPrice = await this.billingService.getTotalPricing(listData);
       listData = await this.discountService.applyDiscount(listData);
       const totalDiscount = await this.discountService.getTotalDiscount(listData);
       const response = await this.outputService.modifyData(listData, totalPrice, totalDiscount);

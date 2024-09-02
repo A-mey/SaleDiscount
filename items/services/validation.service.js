@@ -1,7 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable class-methods-use-this */
-import price from '../data/price';
+// eslint-disable-next-line import/extensions
+import price from '../data/price.js';
 
 export class ValidationService {
 //   constructor() {}

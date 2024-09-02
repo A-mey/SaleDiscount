@@ -18,6 +18,8 @@ export class DiscountService {
           if (x.Quantity > discountData.quantity) {
             const disCountPrice = this.calculateDiscount(discountData, x);
             x.discountPrice = disCountPrice;
+          } else {
+            x.discountPrice = x.Price;
           }
         } else {
           x.discountPrice = x.Price;
@@ -32,9 +34,9 @@ export class DiscountService {
   calculateDiscount = (discountData, priceData) => {
     try {
       const unitPrice = price.find((a) => a.id === priceData.id).price;
-      const discountQuantity = priceData.Quantity / discountData.quantity;
+      const discountQuantity = Math.floor(priceData.Quantity / discountData.quantity);
       const undiscountedItems = priceData.Quantity - discountQuantity * discountData.quantity;
-      const disCountPrice = discountQuantity * priceData.disCountPrice + undiscountedItems * unitPrice;
+      const disCountPrice = (discountQuantity * discountData.discountPrice) + (undiscountedItems * unitPrice);
       return disCountPrice;
     } catch (error) {
       throw new Error(error.message);
@@ -43,7 +45,8 @@ export class DiscountService {
 
   getTotalDiscount = async (pricingList) => {
     try {
-      return pricingList.reduce((accumulator, currentValue) => accumulator + currentValue.discountPrice, 0);
+      const discountPrice = pricingList.reduce((accumulator, currentValue) => accumulator + currentValue.discountPrice, 0);
+      return discountPrice.toFixed(2);
     } catch (error) {
       throw new Error(error.message);
     }

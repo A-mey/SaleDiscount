@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable class-methods-use-this */
-import { ReadLine } from '../utils/readLine.util';
+// eslint-disable-next-line import/extensions
+import { ReadLine } from '../utils/readLine.util.js';
 
 export class InputService {
   readLine;

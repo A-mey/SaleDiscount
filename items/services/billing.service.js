@@ -60,7 +60,8 @@ export class BillingService {
 
   getTotalPricing = async (pricingList) => {
     try {
-      return pricingList.reduce((accumulator, currentValue) => accumulator + currentValue.Price, 0);
+      const totalPrice = pricingList.reduce((accumulator, currentValue) => accumulator + currentValue.Price, 0);
+      return totalPrice.toFixed(2);
     } catch (error) {
       throw new Error(error.message);
     }
