@@ -16,9 +16,7 @@ export class DiscountService {
         const discountData = discount.find((a) => a.itemId === x.id);
         if (discountData) {
           if (x.Quantity > discountData.quantity) {
-            const unitPrice = price.find((a) => a.id === x.id).price;
-            const discountQuantity = x.Quantity / discountData.quantity;
-            const disCountPrice = discountQuantity * x.disCountPrice + unitPrice;
+            const disCountPrice = this.calculateDiscount(discountData, x);
             x.discountPrice = disCountPrice;
           }
         } else {
@@ -26,6 +24,18 @@ export class DiscountService {
         }
       });
       return pricingList;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
+  calculateDiscount = (discountData, priceData) => {
+    try {
+      const unitPrice = price.find((a) => a.id === priceData.id).price;
+      const discountQuantity = priceData.Quantity / discountData.quantity;
+      const undiscountedItems = priceData.Quantity - discountQuantity * discountData.quantity;
+      const disCountPrice = discountQuantity * priceData.disCountPrice + undiscountedItems * unitPrice;
+      return disCountPrice;
     } catch (error) {
       throw new Error(error.message);
     }

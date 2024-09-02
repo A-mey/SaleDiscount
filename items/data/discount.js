@@ -1,10 +1,10 @@
 const discount = [{
   itemId: 1,
-  amount: 2,
+  quantity: 2,
   discountPrice: 5,
 }, {
   itemId: 2,
-  amount: 3,
+  quantity: 3,
   discountPrice: 6,
 }];
 
